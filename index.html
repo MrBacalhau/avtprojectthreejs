@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>PhongLightTest</title>
+		<style>
+			body { margin: 0; overflow: hidden; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<!-- ThreeJS -->
+		<script src="js/three.min.js"></script>
+		<script src="js/loaders/TGALoader.js"></script>
+		<script src="js/utils/BufferGeometryUtils.js"></script>
+		<script src="js/utils/Reflector.js"></script>
+		<script src="js/utils/Lensflare.js"></script>
+		<script src="js/utils/OrbitControls.js"></script>
+
+		<!-- Shaders -->
+		<script type ="x-shader/x-vertex" id="vertexShader">
+				in vec4 vPos, vNormal, vTexCoord;
+				out vec2 tex_coord ,
+				out vec3 reflected;
+				uniform mat4 ModelMatrix, ViewMatrix, ModelViewMatrix, pvmMatrix;
+				uniform mat3 NormalMatrix; // transpose(inverse(mat3(ModelViewMatrix)))
+				void main() {
+					gl_Position = pvmMatrix * vPos; /* Vertex Position to Clip Space */
+					tex_coord = vTexCoord.st;
+					vec3 e = normalize( vec3(ModelViewMatrix * vPos) );
+					vec3 n = normalize( NormalMatrix * vNormal.xyz ); //
+					reflected = reflect( e, n ); //reflection vector in eye coord
+					//reflected = vec3 (inverse (ViewMatrix) * vec4 (reflected, 0.0)); //reflection vector in worldcoord
+					reflected = vec3 (transpose(ViewMatrix) * vec4 (reflected, 0.0)); //View matrix from LookAtis orthogonal
+				}
+			</script>
+
+			<script type ="x-shader/x-fragment" id="fragmentShader">
+				in vec3 reflected;
+				in vec2 tex_coord;
+				out FragColor;
+				uniform samplerCube cubeMap;
+				uniform sampler2D colorMap;
+				const float reflect_factor = 0.8;
+				void main (void) {
+					// Perform a simple 2D texture look up.
+					vec3 base_color = texture(colorMap, tex_coord).rgb;
+					// Perform a cube map look up.
+					vec3 cube_color = texture(cubeMap, reflected).rgb;
+					// Write the final pixel.
+					FragColor = vec4( mix(base_color, cube_color, reflect_factor), 1.0);
+				}
+			</script>
+
+		<!-- Models -->
+		<script src="js/GameObject.js"></script>
+		<script src="js/MovableObject.js"></script>
+		<script src="js/SolidObject.js"></script>
+		<script src="js/boundingBoxes.js"></script>
+
+		<script src="js/Road.js"></script>
+		<script src="js/River.js"></script>
+		<script src="js/Grass.js"></script>
+		<script src="js/Turtle.js"></script>
+		<script src="js/Carr.js"></script>
+		<script src="js/Wood.js"></script>
+		<script src="js/Mirror.js"></script>
+		<script src="js/Frog.js"></script>
+		<script src="js/Candle.js"></script>
+		<script src="js/Flag.js"></script>
+		<script src="js/ParticleSystem.js"></script>
+		<script src="js/ui_elements.js"></script>
+
+		<!-- Crazy cams. Disregard this -->
+		<script src="js/movie.js"></script>
+
+		<!-- Initialize -->
+		<script src="js/main.js"></script>
+
+		<button onclick="STEREO_ON = !STEREO_ON; setStereo()" style="position: absolute; top: 10px; left: 10px"> TOGGLE STEREO </button>
+	</body>
+</html>
