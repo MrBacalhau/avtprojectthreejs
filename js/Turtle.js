@@ -14,7 +14,7 @@ function Turtle(position){
   turtle.add(meshB);
   turtle.rotation.x = Math.PI / 2;
   MovableObject.call(this, position, turtle, turtle_material, turtle_lambert, turtle_phong);
-  SolidObject.call(this, position, turtle, new SphereBox(2), turtle_material, turtle_lambert, turtle_phong);
+  SolidObject.call(this, position, turtle, new SphereBox(3), turtle_material, turtle_lambert, turtle_phong);
 
   this.speed = 5;
   this.direction = new THREE.Vector3(1,0,0);
