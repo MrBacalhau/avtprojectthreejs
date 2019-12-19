@@ -125,7 +125,7 @@ function Frog(position, direction) {
 
     var disp = this.move(delta);
     disp.divideScalar(20);
-    if (this.isOutside() ||(this.mesh.position.y>20 && this.mesh.position.y<65 && !protec)) {
+    if (this.isOutside() ||(this.mesh.position.y>0 && this.mesh.position.y<0 && !protec)) {
       console.log("Sploosh!");
       LIVES--;
       L_DSP.updateLives(LIVES);
